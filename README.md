@@ -7,3 +7,7 @@
 
 * Transfer learning: https://www.tensorflow.org/tutorials/images/transfer_learning
 
+
+## Coursera Course
+I used this Coursera course to ramp up on image classification with Tensorflow. I found it really helpful even though its a decent time commitment to complete the whole course.
+https://www.coursera.org/learn/introduction-tensorflow
