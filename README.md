@@ -1,5 +1,14 @@
 # ImageClassification for At Home
 
+## Tyler's Feedback
+I'd say it's more important to get a respectable accuracy and have a thought out pipeline than experiment with different models. Think of this as an accelerator app or a reference architecture we'd take to a client. we want to prove out we can do this. a proof of concept. so by the end of it you'd be able to "say we achieved this accuracy by employing these methods. this is our strategy to get it to production."
+
+### TLDR:
+* Accuracy is king
+* Specific model chosen is less critial
+* Goal is to build a reference architecture we can use for future projects
+  * Something that could be used as a starting template for future projects
+
 ## Project Definition
  
 Each of y'all volunteered to take part in the Image Recognition At Home project. We had a total of 6 people volunteer, and decided to split the teams into 2 teams of 3. So welcome to your team! I'll let you all decide on a team name .
