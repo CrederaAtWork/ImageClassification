@@ -15,12 +15,34 @@ import io
 import numpy as np
 from PIL import Image
 
+#import cosmos libraries
+from azure.cosmos import exceptions, CosmosClient, PartitionKey
 
 def main(myblob: func.InputStream):
     logging.info(f"Python blob trigger function processed blob \n"
                  f"Name: {myblob.name}\n"
                  f"Blob Size: {myblob.length} bytes")
     
+    # Initialize the Cosmos client
+    endpoint = "endpoint" #tbd
+    key = 'primary_key' #tbd
+
+    # <create_cosmos_client>
+    client = CosmosClient(endpoint, key)
+
+    # Create a database
+    database_name = 'AtHomeDB'
+    database = client.create_database_if_not_exists(id=database_name)
+
+    # Create a container
+    # Using a good partition key improves the performance of database operations.
+    container_name = 'ImageContainer'
+    container = database.create_container_if_not_exists(
+        id=container_name, 
+        partition_key=PartitionKey(path="/name"),
+        offer_throughput=400
+    )
+
     # Constants
     img_width, img_height = 224, 224
 
@@ -48,7 +70,36 @@ def main(myblob: func.InputStream):
 
     # Convert the probabilities to class labels
     label = decode_predictions(prediction)
+
+    # Add items to the container
+    image_items_to_create = [label]]
+
     # Retrieve the most likely result, e.g. highest probability
     label = label[0][0]
 
     logging.info(f"PREDICTION: {label[1]} | {label[2]*100}%")
+
+    # Create Item
+    for image_item in image_items_to_create:
+        container.create_item(body=image_item)
+
+    # Read items (key value lookups by partition key and id, aka point reads)
+    for image in image_items_to_create:
+        item_response = container.read_item(item=image['id'], partition_key=image['name'])
+        request_charge = container.client_connection.last_response_headers['x-ms-request-charge']
+        print('Read item with id {0}. Operation consumed {1} request units'.format(item_response['id'], (request_charge)))
+
+    # Don't think we need this for our purposes, but included jic
+    # Query these items using the SQL query syntax. 
+    # Specifying the partition key value in the query allows Cosmos DB to retrieve data only from the relevant partitions, which improves performance
+
+    # query = "SELECT * FROM c WHERE c.name IN ('sofa', 'chair')"
+    
+    # items = list(container.query_items(
+    #     query=query,
+    #     enable_cross_partition_query=True
+    # ))
+
+    # request_charge = container.client_connection.last_response_headers['x-ms-request-charge']
+
+    # print('Query returned {0} items. Operation consumed {1} request units'.format(len(items), request_charge))
