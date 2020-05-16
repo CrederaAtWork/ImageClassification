@@ -14,7 +14,7 @@ import os
 import io
 import requests
 
-connect_str = "DefaultEndpointsProtocol=https;AccountName=sigstorageaccount;AccountKey=feha7zkcJeiJJ0JONZGiYxSzUEbXp2OGec2qpt33LJpid5PyzGq2tVKG+r1wiN37gxz2RJwHaROMoiF0qPcV6w==;EndpointSuffix=core.windows.net"
+connect_str = ""
 local_path = "./modeldata"
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
